@@ -4,6 +4,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TopMenu from "./topMenu";
 import SideBar from "./sidebar";
 import Chat from "./chat";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -13,14 +14,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function App() {
   const classes = useStyles();
-  const theme = useTheme();
+  const theme = createMuiTheme({
+    palette: {
+      type: "dark"
+    }
+  });
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <TopMenu />
-      <SideBar />
-      <Chat />
-    </div>
+    <MuiThemeProvider theme={theme}>
+      <div className={classes.root}>
+        <CssBaseline />
+        <TopMenu />
+        <SideBar />
+        <Chat />
+      </div>
+    </MuiThemeProvider>
   );
 }
