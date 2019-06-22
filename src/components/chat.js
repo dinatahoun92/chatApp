@@ -15,13 +15,20 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    marginTop: "65px"
+    marginTop: "65px",
+    width: "100%",
+    height: "calc(100vh - 65px)",
+    alignItems: "flex-end"
   },
   btnRoot: {
     padding: "2px 4px",
     display: "flex",
     alignItems: "center",
     width: "100%"
+  },
+  paper: {
+    width: "100%",
+    display: "flex"
   },
   input: {
     marginLeft: 8,
@@ -102,7 +109,7 @@ export default function Chat() {
       <Paper className={classes.btnRoot}>
         <InputBase
           className={classes.input}
-          placeholder="write your messages"
+          placeholder="write your messages ..."
         />
 
         <Divider className={classes.divider} />
@@ -110,6 +117,13 @@ export default function Chat() {
           color="secondary"
           className={classes.iconButton}
           aria-label="Directions"
+          onClick={() =>
+            messagesRefFirebase
+              .child("id1")
+              .set({ text: "msg" })
+              .then(msg => console.log(`sucess set : ${msg}`))
+              .catch(err => console.log(err))
+          }
         />
       </Paper>
     </div>
