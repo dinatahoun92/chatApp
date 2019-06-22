@@ -14,15 +14,6 @@ const useStyles = makeStyles(theme => ({
 export default function App() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
-
-  function handleDrawerClose() {
-    setOpen(false);
-  }
 
   return (
     <div className={classes.root}>

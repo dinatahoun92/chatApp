@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
+import { useSelector, useDispatch } from "react-redux";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -74,15 +74,8 @@ const useStyles = makeStyles(theme => ({
 export default function TopMenu() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
-
-  function handleDrawerClose() {
-    setOpen(false);
-  }
+  const dispatch = useDispatch();
+  const open = useSelector(state => state.open);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -96,7 +89,7 @@ export default function TopMenu() {
           <IconButton
             color="inherit"
             aria-label="Open drawer"
-            onClick={handleDrawerOpen}
+            onClick={() => dispatch({ type: "BURGER" })}
             edge="start"
             className={clsx(classes.menuButton, {
               [classes.hide]: open

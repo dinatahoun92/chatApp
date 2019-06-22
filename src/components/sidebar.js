@@ -13,6 +13,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
+import { useSelector, useDispatch } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -57,17 +58,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Sidebar() {
+  const dispatch = useDispatch();
+  const open = useSelector(state => state.open);
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
 
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
+  // function handleDrawerOpen() {
+  //   setOpen(true);
+  // }
 
-  function handleDrawerClose() {
-    setOpen(false);
-  }
+  // function handleDrawerClose() {
+  //   setOpen(false);
+  // }
 
   return (
     <div className={classes.root}>
@@ -87,7 +89,7 @@ export default function Sidebar() {
         open={open}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={() => dispatch({ type: "BURGER" })}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
