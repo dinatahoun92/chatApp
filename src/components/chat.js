@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import firebase from "../logic/firebase";
@@ -10,6 +10,12 @@ import SendIcon from "@material-ui/icons/Send";
 import SearchIcon from "@material-ui/icons/Search";
 import DirectionsIcon from "@material-ui/icons/Directions";
 import { fontSize } from "@material-ui/system";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -18,7 +24,17 @@ const useStyles = makeStyles(theme => ({
     marginTop: "65px",
     width: "100%",
     height: "calc(100vh - 65px)",
-    alignItems: "flex-end"
+    alignItems: "flex-end",
+    flexDirection: "column",
+    alignContent: "flex-end",
+    height: "100vh"
+  },
+  listsRoot: {
+    width: "100%",
+    backgroundColor: theme.palette.background.paper
+  },
+  inline: {
+    display: "inline"
   },
   btnRoot: {
     padding: "2px 4px",
@@ -101,11 +117,63 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Chat() {
+  const [messages, setMessages] = useState([]);
+
+  const addMsgs = () => {
+    messagesRefFirebase.on(
+      "child_added",
+      function(snapshot) {
+        const newMsgs = [...messages];
+        newMsgs.push(snapshot.val());
+        setMessages(newMsgs);
+      },
+      function(errorObject) {
+        console.log("The read failed: " + errorObject.code);
+      }
+    );
+  };
+  const removeMsgs = () => {
+    console.log("msg removed");
+    messagesRefFirebase.off();
+  };
+  useEffect(() => {
+    addMsgs();
+    console.log(messages);
+    return () => removeMsgs();
+  }, []);
+
   const classes = useStyles();
   const messagesRefFirebase = firebase.database().ref("messages");
   return (
-    <div className={classes.root}>
+    <div className={classes.root} alignItems="flex-end">
       <CssBaseline />
+      <div style={{ flexGrow: 1 }} />
+      <List className={classes.listsRoot}>
+        {messages.map((msg, index) => (
+          <ListItem key={index} alignItems="flex-end">
+            <ListItemAvatar>
+              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+            </ListItemAvatar>
+            <ListItemText
+              primary="Brunch this weekend?"
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    className={classes.inline}
+                    color="textPrimary"
+                  >
+                    Ali Connors
+                  </Typography>
+                  {msg.text}{" "}
+                </React.Fragment>
+              }
+            />
+            <Divider variant="inset" component="li" />
+          </ListItem>
+        ))}
+      </List>
       <Paper className={classes.btnRoot}>
         <InputBase
           className={classes.input}
@@ -119,8 +187,8 @@ export default function Chat() {
           aria-label="Directions"
           onClick={() =>
             messagesRefFirebase
-              .child("id1")
-              .set({ text: "msg" })
+              .child("id4")
+              .set({ text: "msg4" })
               .then(msg => console.log(`sucess set : ${msg}`))
               .catch(err => console.log(err))
           }
