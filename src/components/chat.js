@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import firebase from "../logic/firebase";
@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "flex-end",
     flexDirection: "column",
     alignContent: "flex-end",
-    height: "100vh"
+    height: "calc(100vh - 65px)"
   },
   listsRoot: {
     width: "100%",
@@ -118,12 +118,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
-
+  const msgsRef = useRef();
+  msgsRef.current = messages;
   const addMsgs = () => {
     messagesRefFirebase.on(
       "child_added",
       function(snapshot) {
-        const newMsgs = [...messages];
+        const newMsgs = [...msgsRef.current];
         newMsgs.push(snapshot.val());
         setMessages(newMsgs);
       },
@@ -166,7 +167,7 @@ export default function Chat() {
                   >
                     Ali Connors
                   </Typography>
-                  {msg.text}{" "}
+                  {msg.text}
                 </React.Fragment>
               }
             />
