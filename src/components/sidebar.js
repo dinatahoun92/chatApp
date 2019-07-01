@@ -13,8 +13,12 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import Room from "@material-ui/icons/Room";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
+import { flexbox } from "@material-ui/system";
+import Rooms from "./rooms";
 
 const drawerWidth = 240;
 
@@ -55,15 +59,27 @@ const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3)
+  },
+  rooms: {
+    display: "flex",
+    flexDirection: "column"
+    // paddingLeft: "80px"
   }
 }));
 
 export default function Sidebar() {
   const dispatch = useDispatch();
-  const open = useSelector(state => state.open);
+  const open = useSelector(state => state.burgerReducer.open);
   const classes = useStyles();
   const theme = useTheme();
-
+  const list = () => {
+    return (
+      <ul>
+        <li>sdsd</li>
+        <li>sdsdsd</li>
+      </ul>
+    );
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -92,14 +108,21 @@ export default function Sidebar() {
         </div>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button>
+            <ListItemIcon>
+              <AccountCircle />
+            </ListItemIcon>
+            <ListItemText primary="User Name" />
+          </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <Room />
+            </ListItemIcon>
+            <div className={classes.rooms}>
+              <ListItemText primary="Chat Rooms" />
+              <Rooms />
+            </div>
+          </ListItem>
         </List>
         <Divider />
         <List>
