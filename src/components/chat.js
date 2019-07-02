@@ -16,6 +16,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
+import { useSelector, useDispatch } from "react-redux";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -117,9 +119,26 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Chat() {
+  const dispatch = useDispatch();
+  const roomId = useSelector(state => state.roomReducer.roomId);
+  const user = useSelector(state => state.userReducer.user);
   const [messages, setMessages] = useState([]);
+  const [msgText, setMessageTxt] = useState("");
   const msgsRef = useRef();
   msgsRef.current = messages;
+
+  const createMessage = msgId => ({
+    msgId: massageId,
+    msgText,
+    roomId,
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    user
+  });
+  const messagesRefFirebase = firebase.database().ref("messages");
+  const massageId = messagesRefFirebase.push().key;
+
+  const newMessage = createMessage(massageId);
+
   const addMsgs = () => {
     messagesRefFirebase.on(
       "child_added",
@@ -144,7 +163,6 @@ export default function Chat() {
   }, []);
 
   const classes = useStyles();
-  const messagesRefFirebase = firebase.database().ref("messages");
   return (
     <div className={classes.root} alignItems="flex-end">
       <CssBaseline />
@@ -167,7 +185,7 @@ export default function Chat() {
                   >
                     Ali Connors
                   </Typography>
-                  {msg.text}
+                  {msg.msgText}
                 </React.Fragment>
               }
             />
@@ -179,6 +197,8 @@ export default function Chat() {
         <InputBase
           className={classes.input}
           placeholder="write your messages ..."
+          onChange={event => setMessageTxt(event.target.value)}
+          value={msgText}
         />
 
         <Divider className={classes.divider} />
@@ -188,9 +208,12 @@ export default function Chat() {
           aria-label="Directions"
           onClick={() =>
             messagesRefFirebase
-              .child("id4")
-              .set({ text: "msg4" })
-              .then(msg => console.log(`sucess set : ${msg}`))
+              .child(massageId)
+              .set(newMessage)
+              .then(msg => {
+                console.log(`sucess set : ${msg}`);
+                setMessageTxt("");
+              })
               .catch(err => console.log(err))
           }
         />

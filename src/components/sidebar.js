@@ -70,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 export default function Sidebar() {
   const dispatch = useDispatch();
   const open = useSelector(state => state.burgerReducer.open);
+  const user = useSelector(state => state.userReducer.user);
   const classes = useStyles();
   const theme = useTheme();
   const list = () => {
@@ -112,7 +113,7 @@ export default function Sidebar() {
             <ListItemIcon>
               <AccountCircle />
             </ListItemIcon>
-            <ListItemText primary="User Name" />
+            <ListItemText primary={user} />
           </ListItem>
           <ListItem>
             <ListItemIcon>
