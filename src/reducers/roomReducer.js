@@ -1,20 +1,13 @@
-const intialState = {
-  roomName: 'room 1',
-  roomId: '',
-  roomDesc: ''
-};
-export default function roomReducer(state = intialState, action) {
+export default function roomReducer(state = {}, action) {
   const newState = {
     ...state
   };
   switch (action.type) {
     case "ROOM":
-      return {
-        room: newState.roomName
-      };
+      return Object.assign({}, newState, action.value)
     default:
       return {
-        ...state
+        ...newState
       };
   }
 }

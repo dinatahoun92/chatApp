@@ -18,7 +18,6 @@ import Room from "@material-ui/icons/Room";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
 import { flexbox } from "@material-ui/system";
-import Rooms from "./rooms";
 
 const drawerWidth = 240;
 
@@ -71,6 +70,8 @@ export default function Sidebar() {
   const dispatch = useDispatch();
   const open = useSelector(state => state.burgerReducer.open);
   const user = useSelector(state => state.userReducer.user);
+  const room = useSelector(state => state.roomReducer);
+  console.log(room);
   const classes = useStyles();
   const theme = useTheme();
   const list = () => {
@@ -121,7 +122,34 @@ export default function Sidebar() {
             </ListItemIcon>
             <div className={classes.rooms}>
               <ListItemText primary="Chat Rooms" />
-              <Rooms />
+              <p
+                onClick={() => {
+                  dispatch(
+                    actionCreator.room({
+                      roomName: "room name 1",
+                      roomId: "1",
+                      roomDesc: "room 1 desc"
+                    })
+                  );
+                  dispatch(actionCreator.burger(false));
+                }}
+              >
+                asdsd
+              </p>
+              <p
+                onClick={() => {
+                  dispatch(
+                    actionCreator.room({
+                      roomName: "room name 2",
+                      roomId: "2",
+                      roomDesc: "room 2 desc"
+                    })
+                  );
+                  dispatch(actionCreator.burger(false));
+                }}
+              >
+                sdsdsd
+              </p>
             </div>
           </ListItem>
         </List>
