@@ -87,6 +87,7 @@ export default function Sidebar() {
       roomId,
       roomDesc: "room 1 desc"
     };
+
     roomsRefFirebase
       .child(roomId)
       .set(newRoom)
@@ -94,7 +95,8 @@ export default function Sidebar() {
         console.log(`sucess set : ${room}`);
       })
       .catch(err => console.log(err));
-
+  };
+  const addRoomsListner = () => {
     roomsRefFirebase.on(
       "child_added",
       function(snapshot) {
@@ -112,10 +114,9 @@ export default function Sidebar() {
     roomsRefFirebase.off();
   };
   useEffect(() => {
-    addRoom();
-    console.log(rooms);
+    addRoomsListner();
     return () => removeRooms();
-  }, [room.roomId]);
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -159,7 +160,16 @@ export default function Sidebar() {
               <ListItemText primary="Chat Rooms" />
               <ul>
                 {rooms.map((room, index) => {
-                  return <li>{room.roomName}</li>;
+                  return (
+                    <li
+                      onClick={() => {
+                        dispatch(actionCreator.room(rooms[index]));
+                        dispatch(actionCreator.burger(false));
+                      }}
+                    >
+                      {room.roomName}
+                    </li>
+                  );
                 })}
               </ul>
               {/* <p
