@@ -120,7 +120,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Chat() {
   const dispatch = useDispatch();
-  const roomId = useSelector(state => state.roomReducer.roomId);
+  const room = useSelector(state => state.roomReducer);
   const user = useSelector(state => state.userReducer.user);
   const [messages, setMessages] = useState([]);
   const [msgText, setMessageTxt] = useState("");
@@ -130,17 +130,19 @@ export default function Chat() {
   const createMessage = msgId => ({
     msgId: massageId,
     msgText,
-    roomId,
+    room: room.roomId,
     timestamp: firebase.database.ServerValue.TIMESTAMP,
     user
   });
   const messagesRefFirebase = firebase.database().ref("messages");
-  const massageId = messagesRefFirebase.push().key;
+  const messagesRefFirebasePerRoom = messagesRefFirebase.child(room.roomId);
+  const massageId = messagesRefFirebasePerRoom.push().key;
 
   const newMessage = createMessage(massageId);
 
   const addMsgs = () => {
-    messagesRefFirebase.on(
+    setMessages([]);
+    messagesRefFirebasePerRoom.on(
       "child_added",
       function(snapshot) {
         const newMsgs = [...msgsRef.current];
@@ -154,19 +156,20 @@ export default function Chat() {
   };
   const removeMsgs = () => {
     console.log("msg removed");
-    messagesRefFirebase.off();
+    messagesRefFirebasePerRoom.off();
   };
   useEffect(() => {
     addMsgs();
     console.log(messages);
     return () => removeMsgs();
-  }, []);
+  }, [room.roomId]);
 
   const classes = useStyles();
   return (
     <div className={classes.root} alignItems="flex-end">
       <CssBaseline />
       <div style={{ flexGrow: 1 }} />
+      <p>{room.roomName}</p>
       <List className={classes.listsRoot}>
         {messages.map((msg, index) => (
           <ListItem key={index} alignItems="flex-end">
@@ -207,7 +210,7 @@ export default function Chat() {
           className={classes.iconButton}
           aria-label="Directions"
           onClick={() =>
-            messagesRefFirebase
+            messagesRefFirebasePerRoom
               .child(massageId)
               .set(newMessage)
               .then(msg => {
