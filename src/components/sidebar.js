@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -74,6 +74,9 @@ export default function Sidebar() {
   const room = useSelector(state => state.roomReducer);
   const roomsRefFirebase = firebase.database().ref("rooms");
   const roomId = roomsRefFirebase.push().key;
+  const [rooms, setRooms] = useState([]);
+  const roomsRef = useRef();
+  roomsRef.current = rooms;
 
   console.log(room);
   const classes = useStyles();
@@ -91,7 +94,29 @@ export default function Sidebar() {
         console.log(`sucess set : ${room}`);
       })
       .catch(err => console.log(err));
+
+    roomsRefFirebase.on(
+      "child_added",
+      function(snapshot) {
+        const newRooms = [...roomsRef.current];
+        newRooms.push(snapshot.val());
+        setRooms(newRooms);
+      },
+      function(errorObject) {
+        console.log("The read failed: " + errorObject.code);
+      }
+    );
   };
+  const removeRooms = () => {
+    console.log("room removed");
+    roomsRefFirebase.off();
+  };
+  useEffect(() => {
+    addRoom();
+    console.log(rooms);
+    return () => removeRooms();
+  }, [room.roomId]);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -132,6 +157,11 @@ export default function Sidebar() {
             </ListItemIcon>
             <div className={classes.rooms}>
               <ListItemText primary="Chat Rooms" />
+              <ul>
+                {rooms.map((room, index) => {
+                  return <li>{room.roomName}</li>;
+                })}
+              </ul>
               {/* <p
                 onClick={() => {
                   dispatch(
