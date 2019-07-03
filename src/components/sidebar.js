@@ -18,6 +18,7 @@ import Room from "@material-ui/icons/Room";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
 import { flexbox } from "@material-ui/system";
+import firebase from "../logic/firebase";
 
 const drawerWidth = 240;
 
@@ -71,16 +72,25 @@ export default function Sidebar() {
   const open = useSelector(state => state.burgerReducer.open);
   const user = useSelector(state => state.userReducer.user);
   const room = useSelector(state => state.roomReducer);
+  const roomsRefFirebase = firebase.database().ref("rooms");
+  const roomId = roomsRefFirebase.push().key;
+
   console.log(room);
   const classes = useStyles();
   const theme = useTheme();
-  const list = () => {
-    return (
-      <ul>
-        <li>sdsd</li>
-        <li>sdsdsd</li>
-      </ul>
-    );
+  const addRoom = () => {
+    const newRoom = {
+      roomName: "room name 1",
+      roomId,
+      roomDesc: "room 1 desc"
+    };
+    roomsRefFirebase
+      .child(roomId)
+      .set(newRoom)
+      .then(room => {
+        console.log(`sucess set : ${room}`);
+      })
+      .catch(err => console.log(err));
   };
   return (
     <div className={classes.root}>
@@ -122,7 +132,7 @@ export default function Sidebar() {
             </ListItemIcon>
             <div className={classes.rooms}>
               <ListItemText primary="Chat Rooms" />
-              <p
+              {/* <p
                 onClick={() => {
                   dispatch(
                     actionCreator.room({
@@ -149,8 +159,9 @@ export default function Sidebar() {
                 }}
               >
                 sdsdsd
-              </p>
+              </p> */}
             </div>
+            <button onClick={addRoom}>add room</button>
           </ListItem>
         </List>
         <Divider />

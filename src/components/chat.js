@@ -17,6 +17,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 
 const drawerWidth = 240;
 
@@ -186,7 +187,8 @@ export default function Chat() {
                     className={classes.inline}
                     color="textPrimary"
                   >
-                    Ali Connors
+                    {msg.user}
+                    {moment(msg.timestamp).fromNow()}
                   </Typography>
                   {msg.msgText}
                 </React.Fragment>
