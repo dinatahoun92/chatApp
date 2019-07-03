@@ -19,7 +19,13 @@ import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
 import { flexbox } from "@material-ui/system";
 import firebase from "../logic/firebase";
-
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -75,17 +81,27 @@ export default function Sidebar() {
   const roomsRefFirebase = firebase.database().ref("rooms");
   const roomId = roomsRefFirebase.push().key;
   const [rooms, setRooms] = useState([]);
+  const [chatName, setChatName] = useState("");
   const roomsRef = useRef();
   roomsRef.current = rooms;
+  const [openModal, setOpenModal] = React.useState(false);
+
+  function handleClickOpen() {
+    setOpenModal(true);
+  }
+
+  function handleClose() {
+    setOpenModal(false);
+  }
 
   console.log(room);
   const classes = useStyles();
   const theme = useTheme();
   const addRoom = () => {
     const newRoom = {
-      roomName: "room name 1",
+      roomName: chatName,
       roomId,
-      roomDesc: "room 1 desc"
+      roomDesc: "room desc"
     };
 
     roomsRefFirebase
@@ -201,7 +217,13 @@ export default function Sidebar() {
                 sdsdsd
               </p> */}
             </div>
-            <button onClick={addRoom}>add room</button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpen}
+            >
+              add room
+            </Button>
           </ListItem>
         </List>
         <Divider />
@@ -216,6 +238,43 @@ export default function Sidebar() {
           ))}
         </List>
       </Drawer>
+      {/* start modal */}
+      <Dialog
+        open={openModal}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Add Room</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To add new room to this chat, please enter chat name here.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="chatName"
+            label="Chat Name"
+            type="text"
+            fullWidth
+            value={chatName}
+            onChange={e => setChatName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              handleClose();
+              addRoom();
+            }}
+            color="primary"
+          >
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
