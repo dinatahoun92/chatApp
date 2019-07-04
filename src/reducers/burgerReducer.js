@@ -1,18 +1,16 @@
 const intialState = {
-  open: false
+  open: true
 };
 export default function burgerReducer(state = intialState, action) {
-  const newState = {
-    ...state
-  };
+
   switch (action.type) {
     case "BURGER":
       return {
-        open: !newState.open
+        open: !state.open
       };
     default:
       return {
-        newState
+        ...state
       };
   }
 }
