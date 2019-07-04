@@ -133,7 +133,15 @@ export default function Sidebar() {
     addRoomsListner();
     return () => removeRooms();
   }, []);
-
+  const logOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log("sign out");
+      })
+      .catch(err => console.log(err));
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -167,6 +175,9 @@ export default function Sidebar() {
               <AccountCircle />
             </ListItemIcon>
             <ListItemText primary={user} />
+            <Button variant="outlined" color="primary" onClick={logOut}>
+              sign out
+            </Button>
           </ListItem>
           <ListItem>
             <ListItemIcon>

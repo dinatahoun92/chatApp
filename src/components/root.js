@@ -6,8 +6,8 @@ import Login from "./login";
 import firebase from "../logic/firebase";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
-
-export default function Root({ history }) {
+import { withRouter } from "react-router-dom";
+function Root({ history }) {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -36,3 +36,4 @@ export default function Root({ history }) {
     </Switch>
   );
 }
+export default withRouter(Root);
