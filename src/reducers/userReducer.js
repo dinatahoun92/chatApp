@@ -1,6 +1,5 @@
 const intialState = {
-  user: 'Dina tahoun',
-  photoUrl: '',
+  user: '',
   userId: ''
 };
 export default function userReducer(state = intialState, action) {
@@ -10,7 +9,8 @@ export default function userReducer(state = intialState, action) {
   switch (action.type) {
     case "USER_NAME":
       return {
-        user: newState.user
+        user: action.value.user,
+          userId: action.value.userId,
       };
     default:
       return {

@@ -7,6 +7,8 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import rootReducer from "./reducers/rootReducer";
 import thunk from "redux-thunk";
+import Root from "./components/root";
+import { BrowserRouter } from "react-router-dom";
 const store = createStore(
   rootReducer,
   compose(
@@ -16,7 +18,9 @@ const store = createStore(
 );
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <BrowserRouter>
+      <Root />
+    </BrowserRouter>
   </Provider>,
   document.getElementById("root")
 );
