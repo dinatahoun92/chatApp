@@ -51,8 +51,7 @@ export default function Login({ history }) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+
   const [firebaseError, setFirebaseError] = useState("");
   const login = e => {
     e.preventDefault();
@@ -69,30 +68,12 @@ export default function Login({ history }) {
         );
         history.push("/");
       })
-      .catch(err => console.log(err));
-  };
-  const isFormValid = !emailError && !passwordError;
-
-  const evaluateEmailError = email => {
-    if (!email.length) {
-      setEmailError("Email mustn't be  empty");
-    } else {
-      setEmailError("");
-    }
+      .catch(err => {
+        console.log(err);
+        setFirebaseError(err.message);
+      });
   };
 
-  const evaluatePasswordError = password => {
-    if (password.length < 7) {
-      setPasswordError("Password must be at least 6 charchters!");
-    } else {
-      setPasswordError("");
-    }
-  };
-
-  useEffect(() => {
-    evaluateEmailError(email);
-    evaluatePasswordError(password);
-  }, []);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -118,29 +99,31 @@ export default function Login({ history }) {
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-            <FormHelperText id="component-error-text">Error</FormHelperText>
           </FormControl>
-          <FormControl className={classes.formControl} error>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-            <FormHelperText id="component-error-text">Error</FormHelperText>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
 
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+          <FormControl className={classes.formControl} error>
+            <FormHelperText id="component-error-text">
+              {firebaseError}
+            </FormHelperText>
           </FormControl>
+
           <Button
             type="submit"
             fullWidth
