@@ -15,6 +15,9 @@ import Container from "@material-ui/core/Container";
 import firebase from "../logic/firebase";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+
 const useStyles = makeStyles(theme => ({
   "@global": {
     body: {
@@ -37,6 +40,9 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  formControl: {
+    width: "100%"
   }
 }));
 
@@ -45,7 +51,9 @@ export default function Login({ history }) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
-
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [firebaseError, setFirebaseError] = useState("");
   const login = e => {
     e.preventDefault();
     firebase
@@ -63,48 +71,76 @@ export default function Login({ history }) {
       })
       .catch(err => console.log(err));
   };
+  const isFormValid = !emailError && !passwordError;
 
+  const evaluateEmailError = email => {
+    if (!email.length) {
+      setEmailError("Email mustn't be  empty");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const evaluatePasswordError = password => {
+    if (password.length < 7) {
+      setPasswordError("Password must be at least 6 charchters!");
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  useEffect(() => {
+    evaluateEmailError(email);
+    evaluatePasswordError(password);
+  }, []);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
-        </Avatar>{" "}
+        </Avatar>
         <Typography component="h1" variant="h5">
           Sign in
-        </Typography>{" "}
+        </Typography>
         <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />{" "}
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />{" "}
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+          <FormControl className={classes.formControl} error>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+            <FormHelperText id="component-error-text">Error</FormHelperText>
+          </FormControl>
+          <FormControl className={classes.formControl} error>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <FormHelperText id="component-error-text">Error</FormHelperText>
+
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+          </FormControl>
           <Button
             type="submit"
             fullWidth
@@ -116,11 +152,7 @@ export default function Login({ history }) {
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password ?
-              </Link>
-            </Grid>
+            <Grid item xs />
             <Grid item>
               <Link to="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
