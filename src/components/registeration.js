@@ -15,7 +15,8 @@ import Container from "@material-ui/core/Container";
 import firebase from "../logic/firebase";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
-
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
 const useStyles = makeStyles(theme => ({
   "@global": {
     body: {
@@ -46,6 +47,8 @@ export default function Registeration({ history }) {
   const [displayName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [firebaseError, setFirebaseError] = useState("");
+
   const dispatch = useDispatch();
 
   const register = e => {
@@ -64,7 +67,10 @@ export default function Registeration({ history }) {
           history.push("/");
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        setFirebaseError(err.message);
+      });
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -118,6 +124,11 @@ export default function Registeration({ history }) {
                 onChange={e => setPassword(e.target.value)}
               />
             </Grid>
+            <FormControl className={classes.formControl} error>
+              <FormHelperText id="component-error-text">
+                {firebaseError}
+              </FormHelperText>
+            </FormControl>
             <Grid item xs={12}>
               <FormControlLabel
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
