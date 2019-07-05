@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3)
   },
   submit: {
@@ -45,12 +45,26 @@ const useStyles = makeStyles(theme => ({
 export default function Registeration({ history }) {
   const classes = useStyles();
   const [displayName, setUserName] = useState("");
+  const [displayNameError, setUserNameError] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [disable, setDisable] = useState(false);
+
   const [firebaseError, setFirebaseError] = useState("");
 
   const dispatch = useDispatch();
-
+  const userError = displayName => {
+    if (!displayName.length) {
+      setUserNameError("User name mustn't be empty");
+      setDisable(true);
+    } else {
+      setUserNameError("");
+      setDisable(false);
+    }
+  };
+  // useEffect(() => {
+  //   userError(displayName);
+  // }, []);
   const register = e => {
     e.preventDefault();
     firebase
@@ -94,7 +108,10 @@ export default function Registeration({ history }) {
                 name="userName"
                 autoComplete="lname"
                 value={displayName}
-                onChange={e => setUserName(e.target.value)}
+                onChange={e => {
+                  setUserName(e.target.value);
+                  userError(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,6 +145,9 @@ export default function Registeration({ history }) {
               <FormHelperText id="component-error-text">
                 {firebaseError}
               </FormHelperText>
+              <FormHelperText id="component-error-text">
+                {displayNameError}
+              </FormHelperText>
             </FormControl>
             <Grid item xs={12}>
               <FormControlLabel
@@ -143,6 +163,7 @@ export default function Registeration({ history }) {
             color="primary"
             className={classes.submit}
             onClick={register}
+            disabled={disable}
           >
             Sign Up
           </Button>
