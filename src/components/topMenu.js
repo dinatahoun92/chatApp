@@ -8,6 +8,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { useSelector, useDispatch } from "react-redux";
+
 import * as actionCreator from "../actions/actions";
 const drawerWidth = 240;
 
@@ -77,6 +78,8 @@ export default function TopMenu() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const open = useSelector(state => state.open);
+  const user = useSelector(state => state.userReducer.user);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -99,7 +102,7 @@ export default function TopMenu() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            {user}
           </Typography>
         </Toolbar>
       </AppBar>
