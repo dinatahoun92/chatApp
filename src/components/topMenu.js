@@ -8,6 +8,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { useSelector, useDispatch } from "react-redux";
+import firebase from "../logic/firebase";
+import Button from "@material-ui/core/Button";
 
 import * as actionCreator from "../actions/actions";
 const drawerWidth = 240;
@@ -70,6 +72,9 @@ const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3)
+  },
+  typography: {
+    flexGrow: 1
   }
 }));
 
@@ -79,7 +84,15 @@ export default function TopMenu() {
   const dispatch = useDispatch();
   const open = useSelector(state => state.open);
   const user = useSelector(state => state.userReducer.user);
-
+  const logOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log("sign out");
+      })
+      .catch(err => console.log(err));
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -88,6 +101,7 @@ export default function TopMenu() {
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open
         })}
+        color="default"
       >
         <Toolbar>
           <IconButton
@@ -101,9 +115,12 @@ export default function TopMenu() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap className={classes.typography}>
             {user}
           </Typography>
+          <Button variant="outlined" color="default" onClick={logOut}>
+            sign out
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
