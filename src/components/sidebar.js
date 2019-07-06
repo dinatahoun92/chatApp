@@ -2,22 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Room from "@material-ui/icons/Room";
 import { useSelector, useDispatch } from "react-redux";
 import * as actionCreator from "../actions/actions";
-import { flexbox } from "@material-ui/system";
 import firebase from "../logic/firebase";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -26,6 +17,13 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -70,6 +68,28 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column"
     // paddingLeft: "80px"
+  },
+  fab: {
+    margin: theme.spacing(1),
+    width: "45px",
+    height: "45px"
+  },
+  roomsTitle: {
+    padding: "20px",
+    fontSize: "20px",
+    fontWeight: 600,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  roomsLi: {
+    listStyle: "none",
+    cursor: "pointer",
+    padding: "10px 0"
+  },
+  activeRoom: {
+    borderRight: "4px solid #303f9f",
+    backgroundColor: "#333"
   }
 }));
 
@@ -94,7 +114,6 @@ export default function Sidebar() {
     setOpenModal(false);
   }
 
-  console.log(room);
   const classes = useStyles();
   const theme = useTheme();
   const addRoom = () => {
@@ -133,7 +152,7 @@ export default function Sidebar() {
     addRoomsListner();
     return () => removeRooms();
   }, []);
-
+  console.log(room);
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -162,70 +181,45 @@ export default function Sidebar() {
           </IconButton>
         </div>
         <Divider />
-        <List>
-          <ListItem button>
-            <ListItemIcon>
-              <AccountCircle />
-            </ListItemIcon>
-            <ListItemText primary={user} />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <Room />
-            </ListItemIcon>
-            <div className={classes.rooms}>
-              <ListItemText primary="Chat Rooms" />
-              <ul>
-                {rooms.map((room, index) => {
-                  return (
-                    <li
-                      onClick={() => {
-                        dispatch(actionCreator.room(rooms[index]));
-                        dispatch(actionCreator.burger(false));
-                      }}
-                    >
-                      {room.roomName}
-                    </li>
-                  );
-                })}
-              </ul>
-              {/* <p
+        <Typography
+          variant="h3"
+          display="inline"
+          gutterBottom
+          className={classes.roomsTitle}
+        >
+          Rooms
+          <Fab
+            color="primary"
+            aria-label="Add"
+            className={classes.fab}
+            onClick={handleClickOpen}
+          >
+            <AddIcon />
+          </Fab>
+        </Typography>
+        <List component="nav" aria-label="Secondary mailbox folders">
+          {rooms.map((roomItem, index) => {
+            return room && roomItem.roomId !== room.roomId ? (
+              <ListItem
+                button
                 onClick={() => {
-                  dispatch(
-                    actionCreator.room({
-                      roomName: "room name 1",
-                      roomId: "1",
-                      roomDesc: "room 1 desc"
-                    })
-                  );
-                  dispatch(actionCreator.burger(false));
+                  dispatch(actionCreator.room(rooms[index]));
                 }}
               >
-                asdsd
-              </p>
-              <p
+                <ListItemText primary={"# " + roomItem.roomName} />
+              </ListItem>
+            ) : (
+              <ListItem
+                className={classes.activeRoom}
+                button
                 onClick={() => {
-                  dispatch(
-                    actionCreator.room({
-                      roomName: "room name 2",
-                      roomId: "2",
-                      roomDesc: "room 2 desc"
-                    })
-                  );
-                  dispatch(actionCreator.burger(false));
+                  dispatch(actionCreator.room(rooms[index]));
                 }}
               >
-                sdsdsd
-              </p> */}
-            </div>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={handleClickOpen}
-            >
-              add room
-            </Button>
-          </ListItem>
+                <ListItemText primary={"# " + roomItem.roomName} />
+              </ListItem>
+            );
+          })}
         </List>
       </Drawer>
       {/* start modal */}
