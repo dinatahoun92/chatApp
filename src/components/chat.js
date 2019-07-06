@@ -43,7 +43,10 @@ const useStyles = makeStyles(theme => ({
     padding: "2px 4px",
     display: "flex",
     alignItems: "center",
-    width: "100%"
+    width: "100%",
+    position: "sticky",
+    bottom: 0,
+    zIndex: 99999999
   },
   paper: {
     width: "100%",
@@ -87,6 +90,9 @@ const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3)
+  },
+  avatar: {
+    textTransform: "uppercase"
   }
 }));
 
@@ -153,15 +159,16 @@ export default function Chat() {
     <div className={classes.root} alignItems="flex-end">
       <CssBaseline />
       <div style={{ flexGrow: 1 }} />
-      <p>{room.roomName}</p>
       <List className={classes.listsRoot}>
         {messages.map((msg, index) => (
           <ListItem key={index} alignItems="flex-end">
             <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              <Avatar className={classes.avatar}>
+                {msg.user.substring(0, 1)}
+              </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary="Brunch this weekend?"
+              primary={msg.user}
               secondary={
                 <React.Fragment>
                   <Typography
@@ -170,7 +177,6 @@ export default function Chat() {
                     className={classes.inline}
                     color="textPrimary"
                   >
-                    {msg.user}
                     {moment(msg.timestamp).fromNow()}
                   </Typography>
                   {msg.msgText}
