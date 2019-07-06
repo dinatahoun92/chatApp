@@ -18,6 +18,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
+import ScrollToBottom from "react-scroll-to-bottom";
+import { css } from "glamor";
 
 const drawerWidth = 240;
 
@@ -34,7 +36,8 @@ const useStyles = makeStyles(theme => ({
   },
   listsRoot: {
     width: "100%",
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
+    alignSelf: "flex-end"
   },
   inline: {
     display: "inline"
@@ -103,6 +106,11 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [msgText, setMessageTxt] = useState("");
   const msgsRef = useRef();
+  const chat = useRef();
+  const ROOT_CSS = css({
+    height: "100vh",
+    width: "100%"
+  });
   msgsRef.current = messages;
 
   const createMessage = msgId => ({
@@ -149,6 +157,7 @@ export default function Chat() {
     messagesRefFirebasePerRoom.off();
   };
   useEffect(() => {
+    chat.current.scrollIntoView({ block: "start" });
     addMsgs();
     console.log(messages);
     return () => removeMsgs();
@@ -156,63 +165,65 @@ export default function Chat() {
 
   const classes = useStyles();
   return (
-    <div className={classes.root} alignItems="flex-end">
-      <CssBaseline />
-      <div style={{ flexGrow: 1 }} />
-      <List className={classes.listsRoot}>
-        {messages.map((msg, index) => (
-          <ListItem key={index} alignItems="flex-end">
-            <ListItemAvatar>
-              <Avatar className={classes.avatar}>
-                {msg.user.substring(0, 1)}
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary={msg.user}
-              secondary={
-                <React.Fragment>
-                  <Typography
-                    component="span"
-                    variant="body2"
-                    className={classes.inline}
-                    color="textPrimary"
-                  >
-                    {moment(msg.timestamp).fromNow()}
-                  </Typography>
-                  {msg.msgText}
-                </React.Fragment>
-              }
-            />
-            <Divider variant="inset" component="li" />
-          </ListItem>
-        ))}
-      </List>
-      <Paper className={classes.btnRoot}>
-        <InputBase
-          className={classes.input}
-          placeholder="write your messages ..."
-          onChange={event => setMessageTxt(event.target.value)}
-          value={msgText}
-          onKeyPress={handleKeyPress}
-        />
+    <ScrollToBottom className={ROOT_CSS}>
+      <div className={classes.root} alignItems="flex-end">
+        <CssBaseline />
+        <div style={{ flexGrow: 1 }} />
+        <List className={classes.listsRoot} ref={chat}>
+          {messages.map((msg, index) => (
+            <ListItem key={index} alignItems="flex-end">
+              <ListItemAvatar>
+                <Avatar className={classes.avatar}>
+                  {msg.user.substring(0, 1)}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={msg.user}
+                secondary={
+                  <React.Fragment>
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      className={classes.inline}
+                      color="textPrimary"
+                    >
+                      {moment(msg.timestamp).fromNow()}
+                    </Typography>
+                    {msg.msgText}
+                  </React.Fragment>
+                }
+              />
+              <Divider variant="inset" component="li" />
+            </ListItem>
+          ))}
+        </List>
+        <Paper className={classes.btnRoot}>
+          <InputBase
+            className={classes.input}
+            placeholder="write your messages ..."
+            onChange={event => setMessageTxt(event.target.value)}
+            value={msgText}
+            onKeyPress={handleKeyPress}
+          />
 
-        <Divider className={classes.divider} />
-        <SendIcon
-          color="secondary"
-          className={classes.iconButton}
-          aria-label="Directions"
-          onClick={() =>
-            messagesRefFirebasePerRoom
-              .child(massageId)
-              .set(newMessage)
-              .then(msg => {
-                console.log(`sucess set : ${msg}`);
-                setMessageTxt("");
-              })
-              .catch(err => console.log(err))
-          }
-        />
-      </Paper>
-    </div>
+          <Divider className={classes.divider} />
+          <SendIcon
+            color="secondary"
+            className={classes.iconButton}
+            aria-label="Directions"
+            onClick={() =>
+              messagesRefFirebasePerRoom
+                .child(massageId)
+                .set(newMessage)
+                .then(msg => {
+                  console.log(`sucess set : ${msg}`);
+                  setMessageTxt("");
+                })
+                .catch(err => console.log(err))
+            }
+          />
+        </Paper>
+      </div>
+    </ScrollToBottom>
   );
 }
