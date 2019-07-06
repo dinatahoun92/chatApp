@@ -50,9 +50,9 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen
     }),
     overflowX: "hidden",
-    width: theme.spacing(7) + 1,
+    width: 0,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1
+      width: 0
     }
   },
   toolbar: {
@@ -133,20 +133,13 @@ export default function Sidebar() {
     addRoomsListner();
     return () => removeRooms();
   }, []);
-  const logOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        console.log("sign out");
-      })
-      .catch(err => console.log(err));
-  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
       <Drawer
-        variant="permanent"
+        variant="persistent"
+        anchor="left"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open
@@ -175,9 +168,6 @@ export default function Sidebar() {
               <AccountCircle />
             </ListItemIcon>
             <ListItemText primary={user} />
-            <Button variant="outlined" color="primary" onClick={logOut}>
-              sign out
-            </Button>
           </ListItem>
           <ListItem>
             <ListItemIcon>
@@ -236,17 +226,6 @@ export default function Sidebar() {
               add room
             </Button>
           </ListItem>
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
         </List>
       </Drawer>
       {/* start modal */}
