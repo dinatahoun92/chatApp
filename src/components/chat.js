@@ -126,6 +126,18 @@ export default function Chat() {
       }
     );
   };
+  const handleKeyPress = event => {
+    if (event.key === "Enter") {
+      messagesRefFirebasePerRoom
+        .child(massageId)
+        .set(newMessage)
+        .then(msg => {
+          console.log(`sucess set : ${msg}`);
+          setMessageTxt("");
+        })
+        .catch(err => console.log(err));
+    }
+  };
   const removeMsgs = () => {
     console.log("msg removed");
     messagesRefFirebasePerRoom.off();
@@ -175,6 +187,7 @@ export default function Chat() {
           placeholder="write your messages ..."
           onChange={event => setMessageTxt(event.target.value)}
           value={msgText}
+          onKeyPress={handleKeyPress}
         />
 
         <Divider className={classes.divider} />
