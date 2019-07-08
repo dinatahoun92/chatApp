@@ -29,16 +29,12 @@ const useStyles = makeStyles(theme => ({
     marginTop: "65px",
     width: "100%",
     height: "calc(100vh - 65px)",
-    alignItems: "flex-end",
     flexDirection: "column",
     alignContent: "flex-end",
     height: "calc(100vh - 65px)"
   },
   listsRoot: {
-    width: "100%",
     backgroundColor: theme.palette.background.paper,
-    alignSelf: "flex-end",
-    width: "70%",
     backgroundColor: "transparent",
     justifyContent: "center"
   },
@@ -97,33 +93,60 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3)
   },
-  avatar: {
+  avatarSelf: {
     textTransform: "uppercase"
   },
+  avatar: {
+    textTransform: "uppercase",
+    backgroundColor: "#3f51b5",
+    color: "#f2f2f2"
+  },
   chatTxt: {
-    backgroundColor: "red",
-    width: "70%",
     display: "flex",
-    padding: "10px",
-    borderRadius: "5px",
+    padding: "20px",
+    borderRadius: "20px",
     justifyContent: "center",
     flexDirection: "column",
-    backgroundColor: "#111"
+    backgroundColor: "#504c4c",
+    maxWidth: "65%"
+  },
+  chatTxtSelf: {
+    display: "flex",
+    padding: "20px",
+    borderRadius: "20px",
+    justifyContent: "center",
+    flexDirection: "column",
+    backgroundColor: "#111",
+    maxWidth: "65%"
+  },
+  chatItemSelf: {
+    display: "flex",
+    justifyContent: "flex-end"
   },
   chatItem: {
-    alignItems: "center"
+    display: "flex",
+    justifyContent: "flex-start"
   },
   txt: {
     paddingTop: "10px",
     paddingBottom: "10px",
     letterSpacing: "2px",
-    fontWeight: 300
+    fontWeight: 300,
+    wordBreak: "break-all"
   },
   userChat: {
     fontWeight: 500,
     fontSize: "14px",
     letterSpacing: "2px",
     textTransform: "uppercase"
+  },
+  timeSelf: {
+    fontSize: "10px",
+    color: "#f2f2f2",
+    textAlign: "right",
+    paddingRight: "16px",
+    marginBottom: "20px",
+    width: "70%"
   },
   time: {
     fontSize: "10px",
@@ -209,16 +232,29 @@ export default function Chat() {
             <React.Fragment>
               <ListItem
                 key={index}
-                alignItems="flex-end"
-                className={classes.chatItem}
+                className={
+                  msg.user.userId === user.userId
+                    ? classes.chatItemSelf
+                    : classes.chatItem
+                }
               >
                 <ListItemAvatar>
-                  <Avatar className={classes.avatar}>
+                  <Avatar
+                    className={
+                      msg.user.userId === user.userId
+                        ? classes.avatarSelf
+                        : classes.avatar
+                    }
+                  >
                     {msg.user.user.substring(0, 1)}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  className={classes.chatTxt}
+                  className={
+                    msg.user.userId === user.userId
+                      ? classes.chatTxtSelf
+                      : classes.chatTxt
+                  }
                   primary={
                     <Typography
                       component="h5"
@@ -246,7 +282,11 @@ export default function Chat() {
               <Typography
                 component="h5"
                 variant="body2"
-                className={classes.time}
+                className={
+                  msg.user.userId === user.userId
+                    ? classes.time
+                    : classes.timeSelf
+                }
                 color="textPrimary"
               >
                 {moment(msg.timestamp).fromNow()}
