@@ -157,17 +157,31 @@ export default function Registeration({ history }) {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={register}
-            disabled={disable}
-          >
-            Sign Up
-          </Button>
+          {!displayName.length || !password.length || !email.length ? (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={register}
+              disabled
+            >
+              Sign Up
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={register}
+              disabled={disable}
+            >
+              Sign Up
+            </Button>
+          )}
           <Grid container justify="flex-end">
             <Grid item>
               <Link to="/login" variant="body2">

@@ -124,16 +124,31 @@ export default function Login({ history }) {
             </FormHelperText>
           </FormControl>
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={login}
-          >
-            Sign In
-          </Button>
+          {!password.length || !email.length ? (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={login}
+              disabled
+            >
+              Sign In
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={login}
+              disabled={false}
+            >
+              Sign In
+            </Button>
+          )}
           <Grid container>
             <Grid item xs />
             <Grid item>
