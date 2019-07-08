@@ -4,7 +4,7 @@ import {
 
 const intialState = {
   roomName: "room name 1",
-  roomId: "-Lj7aN1tuUIMhoawSmVz",
+  roomId: "-LjGY2z7bYPepIXdjxOP",
   roomDesc: "room 1 desc"
 };
 

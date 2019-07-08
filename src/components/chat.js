@@ -37,7 +37,10 @@ const useStyles = makeStyles(theme => ({
   listsRoot: {
     width: "100%",
     backgroundColor: theme.palette.background.paper,
-    alignSelf: "flex-end"
+    alignSelf: "flex-end",
+    width: "70%",
+    backgroundColor: "transparent",
+    justifyContent: "center"
   },
   inline: {
     display: "inline"
@@ -96,13 +99,45 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     textTransform: "uppercase"
+  },
+  chatTxt: {
+    backgroundColor: "red",
+    width: "70%",
+    display: "flex",
+    padding: "10px",
+    borderRadius: "5px",
+    justifyContent: "center",
+    flexDirection: "column",
+    backgroundColor: "#111"
+  },
+  chatItem: {
+    alignItems: "center"
+  },
+  txt: {
+    paddingTop: "10px",
+    paddingBottom: "10px",
+    letterSpacing: "2px",
+    fontWeight: 300
+  },
+  userChat: {
+    fontWeight: 500,
+    fontSize: "14px",
+    letterSpacing: "2px",
+    textTransform: "uppercase"
+  },
+  time: {
+    fontSize: "10px",
+    color: "#f2f2f2",
+    textAlign: "right",
+    paddingRight: "16px",
+    marginBottom: "20px"
   }
 }));
 
 export default function Chat() {
   const dispatch = useDispatch();
   const room = useSelector(state => state.roomReducer);
-  const user = useSelector(state => state.userReducer.user);
+  const user = useSelector(state => state.userReducer);
   const [messages, setMessages] = useState([]);
   const [msgText, setMessageTxt] = useState("");
   const msgsRef = useRef();
@@ -171,30 +206,52 @@ export default function Chat() {
         <div style={{ flexGrow: 1 }} />
         <List className={classes.listsRoot} ref={chat}>
           {messages.map((msg, index) => (
-            <ListItem key={index} alignItems="flex-end">
-              <ListItemAvatar>
-                <Avatar className={classes.avatar}>
-                  {msg.user.substring(0, 1)}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={msg.user}
-                secondary={
-                  <React.Fragment>
+            <React.Fragment>
+              <ListItem
+                key={index}
+                alignItems="flex-end"
+                className={classes.chatItem}
+              >
+                <ListItemAvatar>
+                  <Avatar className={classes.avatar}>
+                    {msg.user.user.substring(0, 1)}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  className={classes.chatTxt}
+                  primary={
                     <Typography
-                      component="span"
+                      component="h5"
                       variant="body2"
-                      className={classes.inline}
+                      className={classes.userChat}
                       color="textPrimary"
                     >
-                      {moment(msg.timestamp).fromNow()}
+                      {msg.user.user}
                     </Typography>
-                    {msg.msgText}
-                  </React.Fragment>
-                }
-              />
-              <Divider variant="inset" component="li" />
-            </ListItem>
+                  }
+                  secondary={
+                    <React.Fragment>
+                      <Typography
+                        component="h5"
+                        variant="body2"
+                        className={classes.txt}
+                        color="textPrimary"
+                      >
+                        {msg.msgText}
+                      </Typography>
+                    </React.Fragment>
+                  }
+                />
+              </ListItem>
+              <Typography
+                component="h5"
+                variant="body2"
+                className={classes.time}
+                color="textPrimary"
+              >
+                {moment(msg.timestamp).fromNow()}
+              </Typography>
+            </React.Fragment>
           ))}
         </List>
         <Paper className={classes.btnRoot}>
@@ -208,7 +265,7 @@ export default function Chat() {
 
           <Divider className={classes.divider} />
           <SendIcon
-            color="secondary"
+            color="primary"
             className={classes.iconButton}
             aria-label="Directions"
             onClick={() =>
