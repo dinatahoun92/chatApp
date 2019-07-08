@@ -23,6 +23,7 @@ import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 const drawerWidth = 240;
 
@@ -93,7 +94,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Sidebar() {
+function Sidebar() {
   const dispatch = useDispatch();
   const open = useSelector(state => state.burgerReducer.open);
   const user = useSelector(state => state.userReducer.user);
@@ -262,3 +263,4 @@ export default function Sidebar() {
     </div>
   );
 }
+export default withWidth()(Sidebar);

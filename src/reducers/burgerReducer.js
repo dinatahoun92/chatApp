@@ -1,7 +1,8 @@
-const intialState = {
+export default function burgerReducer(state = window.innerWidth <= 500 ? {
+  open: false
+} : {
   open: true
-};
-export default function burgerReducer(state = intialState, action) {
+}, action) {
 
   switch (action.type) {
     case "BURGER":

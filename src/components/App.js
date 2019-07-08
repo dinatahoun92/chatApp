@@ -17,6 +17,13 @@ export default function App() {
   const theme = createMuiTheme({
     palette: {
       type: "dark"
+    },
+    props: {
+      // withWidth component ⚛️
+      MuiWithWidth: {
+        // Initial width property
+        initialWidth: "lg" // Breakpoint being globally set 🌎!
+      }
     }
   });
 
